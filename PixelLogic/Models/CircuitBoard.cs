@@ -4,8 +4,10 @@ using System.Text;
 
 namespace PixelLogic.Models
 {
+    using System.Drawing;
     using Miscellaneous;
-    using SharpDX;
+    using Image = Miscellaneous.Image;
+    using Point = SharpDX.Point;
 
     class CircuitBoard
     {
@@ -57,8 +59,10 @@ namespace PixelLogic.Models
         }
 
 
-        public void Update()
+        public bool Update()
         {
+            bool result = false;
+
             foreach (Wire wire in Wires)
             {
                 wire.PrepareUpdate();
@@ -79,10 +83,13 @@ namespace PixelLogic.Models
 
                         Image.SetPixel(x, y, pixel);
                     }
+
+                    result = true;
                 }
             }
-        }
 
+            return result;
+        }
 
         public static CircuitBoard FromImage(Image image)
         {
@@ -102,15 +109,8 @@ namespace PixelLogic.Models
             {
                 for (int x = 0; x < lowImage.Width; x++)
                 {
-                    uint pixel = lowImage.GetPixel(x,y);
-
-                    uint r = ((pixel & 0x00FF0000) >> 1) & 0x00FF0000;
-                    uint g = ((pixel & 0x0000FF00) >> 1) & 0x0000FF00;
-                    uint b = ((pixel & 0x000000FF) >> 1) & 0x000000FF;
-
-                    pixel = 0xFF000000 | r | g | b;
-                    
-                    lowImage.SetPixel(x, y, pixel);
+                    Color pixel = Color.FromArgb((int)lowImage.GetPixel(x, y));
+                    lowImage.SetPixel(x, y, (uint)Color.FromArgb(0xFF, pixel.R >> 1, pixel.G >> 1, pixel.B >> 1).ToArgb());
                 }
             }
 

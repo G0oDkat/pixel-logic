@@ -8,7 +8,7 @@
 
         protected override void OnStart()
         {
-            window = CreateWindow(() => new MainWindow(), "PIXEL LOGIC");
+            window = CreateWindow(() => new MainWindow(), "Pixel Logic");
             window.Destroyed += OnWindowDestroyed;
             window.CenterToScreen();
             window.Show();

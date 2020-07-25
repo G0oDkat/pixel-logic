@@ -1,20 +1,27 @@
 ﻿namespace PixelLogic.Miscellaneous
 {
+    using System;
     using System.Diagnostics;
 
     internal class PerformanceMonitor
     {
-        private const int Interval = 500;
-
         private readonly Stopwatch stopwatch;
-        private int fps;
 
-        private int frames;
+        private readonly TimeSpan interval;
 
-        public PerformanceMonitor()
+        private int frameCount;
+        private int tickCount;
+
+
+        public PerformanceMonitor(TimeSpan interval)
         {
+            this.interval = interval;
             stopwatch = new Stopwatch();
         }
+
+        public double FramesPerSecond{ get; private set; }
+
+        public double TicksPerSecond { get; private set; }
 
         public void Start()
         {
@@ -24,26 +31,36 @@
         public void Stop()
         {
             stopwatch.Stop();
-            frames = 0;
+            frameCount = 0;
+            tickCount = 0;
         }
 
-        public void NotifyFrameChanged()
+        public void IncrementTicks()
         {
-            frames++;
+            tickCount++;
         }
 
-        public int GetFps()
+        public void IncermentFrames()
         {
-            long elapsed = stopwatch.ElapsedMilliseconds;
+            frameCount++;
+        }
 
-            if (elapsed > Interval)
+        public bool TryCalculate()
+        {
+            TimeSpan elapsed = stopwatch.Elapsed;
+
+            if (elapsed > interval)
             {
-                fps = frames * 1000 / (int)elapsed;
-                frames = 0;
+                FramesPerSecond = frameCount / elapsed.TotalSeconds;
+                TicksPerSecond = tickCount / elapsed.TotalSeconds;
+                frameCount = 0;
+                tickCount = 0;
                 stopwatch.Restart();
+
+                return true;
             }
 
-            return fps;
+            return false;
         }
     }
 }

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PixelLogic.Miscellaneous
+﻿namespace PixelLogic.Miscellaneous
 {
+    using System.Drawing;
+
     internal static class ImageExtensions
     {
         private const uint Black = 0xFF000000;

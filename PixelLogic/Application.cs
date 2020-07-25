@@ -8,14 +8,15 @@
 
     internal class Application : IDisposable
     {
-        private readonly EventLoop loop;
+        private readonly IEventLoop loop;
         private readonly WindowFactory windowFactory;
         private readonly HashSet<WindowCore> windows;
 
         public Application()
         {
-            loop = new EventLoop();
-            windowFactory = WindowFactory.Create();
+            loop = new DispatcherEventLoop();
+            IntPtr icon = User32Helpers.LoadIcon(IntPtr.Zero, SystemIcon.IDI_APPLICATION);
+            windowFactory = WindowFactory.Create(hIcon: icon);
             windows = new HashSet<WindowCore>();
         }
 
