@@ -5,7 +5,7 @@ PIXEL LOGIC is a simple and high performance logic simulator. You can use it to 
 
 
 ## Getting Started
- 1. Download the latest version of PIXEL LOGIC from the [releases](/releases/latest) section.
+ 1. Download the latest version of PIXEL LOGIC from the [releases](https://github.com/G0oDkat/pixel-logic/releases) section.
  2. Use an image editor of your choice (like Photoshop, Gimp or Paint) to cerate your circuit.
  3. Run PIXEL LOGIC and drop your image on to the simulator to see it in action.
 
