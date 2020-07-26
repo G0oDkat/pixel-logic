@@ -6,6 +6,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ApplicationIcon>Logo.ico</ApplicationIcon>
+    <PackageId>PIXEL LOGIC</PackageId>
+    <Authors>GOoDkat</Authors>
+    <Product>PIXEL LOGIC</Product>
   </PropertyGroup>
 
   <ItemGroup>
