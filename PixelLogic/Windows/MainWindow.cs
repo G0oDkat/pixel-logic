@@ -58,7 +58,6 @@
         private Point lastMousePosition;
 
         private string performaceText;
-        //private Matrix3x2 scalingMatrix;
 
         private SolidColorBrush textBrush;
         private TextFormat textFormat;
@@ -70,7 +69,6 @@
         private Rectangle windowRect;
 
         private WindowStyles windowStyles;
-        //private Matrix3x2 translationMatrix;
 
         private float zoom;
 
@@ -281,9 +279,10 @@
 
             zoom = minRatio < 1f
                        ? 1f
-                       : (float) Math.Pow(zoomFactor, Math.Floor(Math.Log(minRatio) / Math.Log(zoomFactor)));
+                       : (float)Math.Pow(zoomFactor, Math.Floor(Math.Log(minRatio) / Math.Log(zoomFactor)));
 
             translation = new Vector2(clientSize.Width / (zoom * 2f), clientSize.Height / (zoom * 2f));
+
             UpdateTransformation();
         }
 

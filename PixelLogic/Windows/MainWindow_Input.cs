@@ -1,12 +1,12 @@
 ﻿namespace PixelLogic.Windows
 {
+    using System;
     using Miscellaneous;
-    using NetCoreEx.Geometry;
     using SharpDX;
     using WinApi.User32;
     using WinApi.Windows;
-    using WinApi.Windows.Helpers;
     using Point = NetCoreEx.Geometry.Point;
+    using Rectangle = NetCoreEx.Geometry.Rectangle;
 
     internal partial class MainWindow
     {
@@ -129,35 +129,30 @@
 
         protected override void OnMouseWheel(ref MouseWheelPacket packet)
         {
-            
-            Point mousePosition = packet.Point;
+            Point mousePosition = ScreenToClient(packet.Point);
 
-            Vector2 relativeMousePosition = new Vector2(mousePosition.X / zoom - translation.X, mousePosition.Y / zoom - translation.Y);
-            
-
-
-            //var delta = new Vector2(relativeMousePosition.X - relativeCenter.X, relativeMousePosition.Y - relativeCenter.Y);
+            var positionWorld = new Vector2(mousePosition.X / zoom - translation.X,
+                                            mousePosition.Y / zoom - translation.Y);
 
             if (packet.WheelDelta > 0)
             {
                 float z = zoom * zoomFactor;
 
+
+
+
                 if (z <= maxZoom)
                 {
                     zoom = z;
 
-                    
+                    //var vector2 = new Vector2(positionWorld.X * zoomFactor - positionWorld.X, positionWorld.Y * zoomFactor - positionWorld.Y);
+                    //translation = new Vector2((translation.X - vector2.X) / zoomFactor, (translation.Y - vector2.Y) / zoomFactor);
 
 
-                    //var bla2 = new Vector2(mousePosition.X / zoom, mousePosition.Y / zoom);
+                    translation = new Vector2((translation.X - (positionWorld.X * zoomFactor - positionWorld.X)) / zoomFactor, (translation.Y - (positionWorld.Y * zoomFactor - positionWorld.Y)) / zoomFactor);
 
-                    //var offsetX = bla2.X - bla.X;
-                    //var offsetY = bla2.Y - bla.Y;
-
-                    translation = new Vector2((translation.X)/ zoomFactor , (translation.Y)/ zoomFactor);
                 }
 
-                //translation = new Vector2((mousePosition.X - (mousePosition.X - translation.X) * zoomFactor), (mousePosition.Y - (mousePosition.Y - translation.Y) * zoomFactor));
             }
             else
             {
@@ -166,13 +161,25 @@
                 if (z >= minZoom)
                 {
                     zoom = z;
-                    translation = new Vector2((translation.X) * zoomFactor, (translation.Y) * zoomFactor);
-                }
+                    //var vector2 = new Vector2(positionWorld.X - (positionWorld.X / zoomFactor) , positionWorld.Y - (positionWorld.Y / zoomFactor));
+                    //translation = new Vector2((translation.X + vector2.X) * zoomFactor , (translation.Y + vector2.Y)  * zoomFactor );
 
-                //translation = new Vector2((mousePosition.X - (mousePosition.X - translation.X) / zoomFactor), (mousePosition.Y - (mousePosition.Y - translation.Y) / zoomFactor));
+                    translation = new Vector2((translation.X + (positionWorld.X - (positionWorld.X / zoomFactor))) * zoomFactor, (translation.Y + (positionWorld.Y - (positionWorld.Y / zoomFactor))) * zoomFactor);
+                }
             }
 
             UpdateTransformation();
+        }
+
+        private Point ScreenToClient(Point point)
+        {
+            var client = new Rectangle();
+
+            User32Methods.AdjustWindowRectEx(ref client, GetStyles(), User32Methods.GetMenu(Handle) != IntPtr.Zero,
+                                             GetExStyles());
+            GetWindowRect(out Rectangle window);
+
+            return new Point(point.X - window.Left + client.Left, point.Y - window.Top + client.Top);
         }
 
         #endregion
