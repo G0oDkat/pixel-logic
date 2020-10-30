@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PixelLogic.Windows
+﻿namespace PixelLogic.Windows
 {
+    using System;
+    using System.Buffers;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using Models;
-    using SharpDX;
-    using SharpDX.Direct2D1;
-    using SharpDX.DirectWrite;
-    using SharpDX.DXGI;
-    using Shell32;
+    using System.Runtime.InteropServices;
+    using global::Interop.Shell32;
+    using Miscellaneous;
     using WinApi.User32;
     using WinApi.Windows;
-    using AlphaMode = SharpDX.Direct2D1.AlphaMode;
-    using Image = Miscellaneous.Image;
 
-    partial class MainWindow
+    internal partial class MainWindow
     {
         protected override void OnMessage(ref WindowMessage msg)
         {
@@ -37,23 +31,46 @@ namespace PixelLogic.Windows
         {
             IntPtr hDrop = packet.HDrop;
 
-            uint count = Shell32Methods.DragQueryFile(hDrop, 0xFFFFFFFF, null, 0);
-
-            List<string> paths = new List<string>((int)count);
-
-            for (uint i = 0; i < count; i++)
+            try
             {
-                uint size = Shell32Methods.DragQueryFile(hDrop, i, null, 0);
+                uint count = Shell32.DragQueryFileW(hDrop, 0xFFFFFFFF, IntPtr.Zero, 0);
 
-                var path = new StringBuilder((int)size + 1);
-                Shell32Methods.DragQueryFile(hDrop, i, path, size + 1);
+                var paths = new string[(int)count];
 
-                paths.Add(path.ToString());
+                for (uint i = 0; i < count; i++)
+                {
+                    uint size = Shell32.DragQueryFileW(hDrop, i, IntPtr.Zero, 0);
+
+                    char[] chars = ArrayPool<char>.Shared.Rent((int)(size + 1));
+
+                    try
+                    {
+                        GCHandle handle = GCHandle.Alloc(chars, GCHandleType.Pinned);
+
+                        try
+                        {
+                            Shell32.DragQueryFileW(hDrop, i, handle.AddrOfPinnedObject(), size);
+
+                            paths[i] = new string(chars.AsSpan(0, (int)size));
+                        }
+                        finally
+                        {
+                            if (handle.IsAllocated)
+                                handle.Free();
+                        }
+                    }
+                    finally
+                    {
+                        ArrayPool<char>.Shared.Return(chars);
+                    }
+                }
+
+                OnFilesDropped(paths);
             }
-
-            OnFilesDropped(paths);
-
-            Shell32Methods.DragFinish(hDrop);
+            finally
+            {
+                Shell32.DragFinish(hDrop);
+            }
         }
 
         private void OnFilesDropped(ICollection<string> paths)
@@ -64,7 +81,8 @@ namespace PixelLogic.Windows
 
             try
             {
-                LoadCircuitBoard(path);
+                Image image = CreateImageFromFile(path);
+                LoadCircuitBoard(image);
 
                 fileSystemWatcher.Path = Path.GetDirectoryName(path);
                 fileSystemWatcher.Filter = Path.GetFileName(path);
@@ -75,6 +93,5 @@ namespace PixelLogic.Windows
                 Debug.WriteLine(exception);
             }
         }
-
     }
 }

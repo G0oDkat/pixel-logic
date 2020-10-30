@@ -1,7 +1,6 @@
 ﻿namespace PixelLogic.Models
 {
     using System.Collections.Generic;
-    using System.Linq;
     using SharpDX;
 
     internal class Wire
@@ -43,8 +42,23 @@
 
         public bool Update()
         {
-            IsActive = IsForced ? IsForcedActive : SourceWires.Aggregate(false, (w, w2) => w || !w2.WasActive);
+            if (IsForced)
+            {
+                IsActive = IsForcedActive;
+            }
+            else
+            {
+                bool isActive = false;
 
+                // ReSharper disable once LoopCanBeConvertedToQuery
+                foreach (Wire wire in SourceWires)
+                {
+                    isActive = isActive || !wire.WasActive;
+                }
+
+                IsActive = isActive;
+            }
+            
             return WasActive != IsActive;
         }
     }

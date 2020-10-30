@@ -1,15 +1,15 @@
 ﻿namespace PixelLogic.Miscellaneous
 {
-    using System.Drawing;
+    using SixLabors.ImageSharp.PixelFormats;
 
     internal static class ImageExtensions
     {
-        private const uint Black = 0xFF000000;
-        private const uint Gray = 0xFF808080;
+        private static readonly Bgra32 Black = new Bgra32(0x00, 0x00, 0x00);
+        private static readonly Bgra32 Gray = new Bgra32(0x80, 0x80, 0x80);
 
         public static bool IsWire(this Image image, int x, int y)
         {
-            uint pixel = image.GetPixel(x, y);
+            Bgra32 pixel = image[x, y];
 
             return pixel != Black && pixel != Gray;
         }

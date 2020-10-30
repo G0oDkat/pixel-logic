@@ -21,8 +21,14 @@
 
   <ItemGroup>
     <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.1" />
     <PackageReference Include="WinApi" Version="4.0.0" />
     <PackageReference Include="WinApi.DxUtils" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Interop.Kernel32\Interop.Kernel32.csproj" />
+    <ProjectReference Include="..\Interop.Shell32\Interop.Shell32.csproj" />
+    <ProjectReference Include="..\Interop.User32\Interop.User32.csproj" />
   </ItemGroup>
 </Project>

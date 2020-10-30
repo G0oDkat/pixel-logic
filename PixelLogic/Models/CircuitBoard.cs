@@ -4,9 +4,8 @@ using System.Text;
 
 namespace PixelLogic.Models
 {
-    using System.Drawing;
     using Miscellaneous;
-    using Image = Miscellaneous.Image;
+    using SixLabors.ImageSharp.PixelFormats;
     using Point = SharpDX.Point;
 
     class CircuitBoard
@@ -79,9 +78,7 @@ namespace PixelLogic.Models
                         int x = point.X;
                         int y = point.Y;
 
-                        uint pixel = image.GetPixel(x, y);
-
-                        Image.SetPixel(x, y, pixel);
+                        Image[x, y] = image[x, y];
                     }
 
                     result = true;
@@ -109,8 +106,9 @@ namespace PixelLogic.Models
             {
                 for (int x = 0; x < lowImage.Width; x++)
                 {
-                    Color pixel = Color.FromArgb((int)lowImage.GetPixel(x, y));
-                    lowImage.SetPixel(x, y, (uint)Color.FromArgb(0xFF, pixel.R >> 1, pixel.G >> 1, pixel.B >> 1).ToArgb());
+                    Bgra32 pixel = lowImage[x,y];
+
+                    lowImage[x,y] = new Bgra32((byte)(pixel.R >> 1), (byte)(pixel.G >> 1), (byte)(pixel.B >> 1));
                 }
             }
 
@@ -307,9 +305,7 @@ namespace PixelLogic.Models
                         int x = point.X;
                         int y = point.Y;
 
-                        uint pixel = i.GetPixel(x, y);
-
-                        image.SetPixel(x, y, pixel);
+                        image[x,y] = i[x,y];
                     }
             }
 

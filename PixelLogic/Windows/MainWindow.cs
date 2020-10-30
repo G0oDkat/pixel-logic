@@ -1,28 +1,30 @@
 ﻿namespace PixelLogic.Windows
 {
-    using System;
-    using System.Diagnostics;
-    using System.Drawing;
-    using System.IO;
-    using System.Reflection;
+    using global::Interop.Shell32;
+    using global::System;
+    using global::System.Diagnostics;
+    using global::System.IO;
+    using global::System.Reflection;
+    using global::System.Runtime.InteropServices;
+    using Interop;
     using Miscellaneous;
+    using Miscellaneous.Input;
     using Models;
     using SharpDX;
     using SharpDX.Direct2D1;
     using SharpDX.DirectWrite;
     using SharpDX.DXGI;
-    using SharpDX.IO;
     using SharpDX.Mathematics.Interop;
-    using SharpDX.WIC;
-    using Shell32;
+    using SixLabors.ImageSharp;
+    using SixLabors.ImageSharp.PixelFormats;
     using WinApi.DxUtils;
     using WinApi.DxUtils.Component;
     using WinApi.User32;
     using WinApi.Windows;
     using AlphaMode = SharpDX.Direct2D1.AlphaMode;
-    using Bitmap = System.Drawing.Bitmap;
     using BitmapInterpolationMode = SharpDX.Direct2D1.BitmapInterpolationMode;
     using Image = Miscellaneous.Image;
+    using ImageSharp = SixLabors.ImageSharp.Image;
     using PixelFormat = SharpDX.Direct2D1.PixelFormat;
     using Point = NetCoreEx.Geometry.Point;
     using Rectangle = NetCoreEx.Geometry.Rectangle;
@@ -47,7 +49,6 @@
         private int forcedWireY;
         private int frames;
         private int framesPerTick;
-        private Icon icon;
 
         private bool isFullScreen;
         private bool isMaximized;
@@ -71,9 +72,13 @@
         private WindowStyles windowStyles;
 
         private float zoom;
+        private readonly Keyboard keyboard;
 
         public MainWindow()
         {
+            keyboard = new Keyboard();
+            keyboard.KeyDown += OnKeyboardKeyDown;
+
             clearColor = new RawColor4(0f, 0f, 0f, 1f);
             textColor = new RawColor4(1f, 1f, 1f, 1f);
 
@@ -94,14 +99,15 @@
 
             fileSystemWatcher.Changed += OnFileSystemWatcherChanged;
         }
-
+        
         private void OnFileSystemWatcherChanged(object sender, FileSystemEventArgs e)
         {
             Dispatcher.Current.Invoke(() =>
             {
                 try
                 {
-                    LoadCircuitBoard(e.FullPath);
+                    Image image = CreateImageFromFile(e.FullPath);
+                    LoadCircuitBoard(image);
                 }
                 catch (Exception exception)
                 {
@@ -114,9 +120,7 @@
         {
             base.OnCreate(ref packet);
 
-            LoadWindowIcon();
-
-            Shell32Methods.DragAcceptFiles(Handle, true);
+            Shell32.DragAcceptFiles(Handle, true);
 
             textBrush = new SolidColorBrush(Dx.D2D.Context, textColor);
             textFormat = new TextFormat(Dx.TextFactory, "Consolas", 16);
@@ -137,9 +141,8 @@
             ResetTransformation();
         }
 
-        private void LoadCircuitBoard(string path)
+        private void LoadCircuitBoard(Image image)
         {
-            Image image = CreateImageFromFile(path);
             circuitBoard = CircuitBoard.FromImage(image);
 
             bitmap?.Dispose();
@@ -149,27 +152,72 @@
             ResetTransformation();
         }
 
+        private void SaveCircuitBoardWithDialog()
+        {
+
+        }
+
+        private void SaveCircuitBoard(string path)
+        {
+
+        }
+        private void CopyCircuitBoard()
+        {
+            try
+            {
+                using (Image<Bgra32> image = circuitBoard.Image.ToImageSharp())
+                {
+                    Clipboard.SetImage(image);
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception);
+            }
+        }
+
+        private void PasteCircuitBoard()
+        {
+            try
+            {
+                if (Clipboard.TryGetImage<Bgra32>(out Image<Bgra32> image))
+                {
+                    using (image)
+                    {
+                        fileSystemWatcher.EnableRaisingEvents = false;
+
+                        LoadCircuitBoard(Image.FromImageSharp(image));
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception);
+            }
+        }
+
+
         private Image CreateImageFromResource(string resource)
         {
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource))
             {
-                return Image.FromDrawing(new Bitmap(stream));
+                return CreateImageFromStream(stream);
             }
         }
 
         private Image CreateImageFromFile(string path)
         {
-            using (var factory = new ImagingFactory())
-            using (var stream = new NativeFileStream(path, NativeFileMode.Open, NativeFileAccess.Read))
-            using (var decoder = new BitmapDecoder(factory, stream, DecodeOptions.CacheOnDemand))
+            using (FileStream stream = File.OpenRead(path))
             {
-                BitmapFrameDecode frame = decoder.GetFrame(0);
+                return CreateImageFromStream(stream);
+            }
+        }
 
-                using (var converter = new FormatConverter(factory))
-                {
-                    converter.Initialize(frame, SharpDX.WIC.PixelFormat.Format32bppBGRA);
-                    return Image.FromFormatConverter(converter);
-                }
+        private Image CreateImageFromStream(Stream stream)
+        {
+            using (Image<Bgra32> image = ImageSharp.Load<Bgra32>(stream))
+            {
+                return Image.FromImageSharp(image);
             }
         }
 
@@ -210,7 +258,9 @@
                 }
 
                 if (update)
+                {
                     circuitBoard.Image.CopyToBitmap(bitmap);
+                }
 
                 frames = 0;
             }
@@ -333,14 +383,7 @@
             isFullScreen = !isFullScreen;
         }
 
-        public void LoadWindowIcon()
-        {
-            string fileName = Process.GetCurrentProcess().MainModule.FileName;
-            icon = Icon.ExtractAssociatedIcon(fileName);
 
-            User32Methods.SendMessage(Handle, 0x0080, IntPtr.Zero, icon.Handle);
-            User32Methods.SendMessage(Handle, 0x0080, new IntPtr(1), icon.Handle);
-        }
 
         protected override void Dispose(bool disposing)
         {

@@ -2,6 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Reflection.Metadata;
     using WinApi.User32;
     using WinApi.Windows;
     using WinApi.Windows.Helpers;
@@ -11,12 +14,13 @@
         private readonly IEventLoop loop;
         private readonly WindowFactory windowFactory;
         private readonly HashSet<WindowCore> windows;
+        //private readonly Icon icon;
 
         public Application()
         {
             loop = new DispatcherEventLoop();
-            IntPtr icon = User32Helpers.LoadIcon(IntPtr.Zero, SystemIcon.IDI_APPLICATION);
-            windowFactory = WindowFactory.Create(hIcon: icon);
+            //icon = LoadIcon();
+            windowFactory = WindowFactory.Create(/*hIcon:icon.Handle*/);
             windows = new HashSet<WindowCore>();
         }
 
@@ -63,5 +67,11 @@
 
             return window;
         }
+
+        //private Icon LoadIcon()
+        //{
+        //    string fileName = Process.GetCurrentProcess().MainModule.FileName;
+        //    return Icon.ExtractAssociatedIcon(fileName);
+        //}
     }
 }

@@ -1,20 +1,17 @@
 ﻿namespace PixelLogic.Miscellaneous
 {
     using System;
-    using System.Drawing.Imaging;
-    using System.IO;
-    using SharpDX;
     using SharpDX.Direct2D1;
-    using SharpDX.WIC;
-    using PixelFormat = SharpDX.WIC.PixelFormat;
+    using SixLabors.ImageSharp;
+    using SixLabors.ImageSharp.PixelFormats;
 
     internal class Image
     {
-        private readonly uint[] data;
+        private readonly Bgra32[] data;
 
         public Image(int width, int height)
         {
-            data = new uint[width * height];
+            data = new Bgra32[width * height];
             Width = width;
             Height = height;
         }
@@ -23,52 +20,37 @@
 
         public int Height { get; }
 
-        public uint GetPixel(int x, int y)
+        public Bgra32 this[int x, int y]
         {
-            return data[y * Width + x];
+            get => data[y * Width + x];
+            set => data[y * Width + x] = value;
         }
-
-        public void SetPixel(int x, int y, uint value)
+        
+        public static Image FromImageSharp(Image<Bgra32> image)
         {
-            data[y * Width + x] = value;
-        }
+            if (image == null)
+                throw new ArgumentNullException(nameof(image));
 
-        public static Image FromFormatConverter(FormatConverter converter)
-        {
-            if (converter == null)
-                throw new ArgumentNullException(nameof(converter));
-
-            if (converter.PixelFormat != PixelFormat.Format32bppBGRA)
-                throw new ArgumentException("invalid pixel format");
-
-            Size2 size = converter.Size;
-
-            var image = new Image(size.Width, size.Height);
-
-            converter.CopyPixels(image.data);
-
-            return image;
-        }
-
-        public static Image FromDrawing(System.Drawing.Bitmap bitmap)
-        {
-            if (bitmap == null)
-                throw new ArgumentNullException(nameof(bitmap));
-
-            int width = bitmap.Width;
-            int height = bitmap.Height;
-            var image = new Image(width, height);
+            int width = image.Width;
+            int height = image.Height;
+            var result = new Image(width, height);
 
 
-            for (int y = 0; y < height; y++)
+            if (image.TryGetSinglePixelSpan(out Span<Bgra32> singlePixelSpan))
             {
-                for (int x = 0; x < width; x++)
-                {
-                    image.SetPixel(x,y, (uint)bitmap.GetPixel(x, y).ToArgb());
-                }
+                singlePixelSpan.CopyTo(result.data);
+            }
+            else
+            {
+                throw new InvalidOperationException("Unable to get a single pixel span.");
             }
 
-            return image;
+            return result;
+        }
+
+        public Image<Bgra32> ToImageSharp()
+        {
+            return SixLabors.ImageSharp.Image.LoadPixelData(data, Width, Height);
         }
 
         public void CopyToBitmap(Bitmap1 bitmap)

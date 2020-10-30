@@ -3,8 +3,11 @@
     using System;
     using Miscellaneous;
     using SharpDX;
+    using SixLabors.ImageSharp;
     using WinApi.User32;
     using WinApi.Windows;
+    using Image = Miscellaneous.Image;
+    using MouseButton = WinApi.Windows.MouseButton;
     using Point = NetCoreEx.Geometry.Point;
     using Rectangle = NetCoreEx.Geometry.Rectangle;
 
@@ -14,29 +17,46 @@
 
         protected override void OnKey(ref KeyPacket packet)
         {
-            if (packet.IsKeyDown)
+            keyboard.ProcessKey(ref packet);
+        }
+
+        private void OnKeyboardKeyDown(object sender, VirtualKey key)
+        {
+            switch (key)
             {
-            }
-            else
-            {
-                switch (packet.Key)
-                {
-                    case VirtualKey.F11:
-                        ToggleFullScreen();
-                        break;
-                    case VirtualKey.ADD:
-                        IncreaseTicks();
-                        break;
-                    case VirtualKey.SUBTRACT:
-                        DecreaseTicks();
-                        break;
-                    case VirtualKey.SPACE:
-                        ResetTransformation();
-                        break;
-                    case VirtualKey.ESCAPE:
-                        Destroy();
-                        break;
-                }
+                case VirtualKey.F11:
+                    ToggleFullScreen();
+                    break;
+                case VirtualKey.ADD:
+                    IncreaseTicks();
+                    break;
+                case VirtualKey.SUBTRACT:
+                    DecreaseTicks();
+                    break;
+                case VirtualKey.SPACE:
+                    ResetTransformation();
+                    break;
+                case VirtualKey.ESCAPE:
+                    Destroy();
+                    break;
+                case VirtualKey.S:
+                    if (keyboard.IsKeyDown(VirtualKey.CONTROL))
+                    {
+                        SaveCircuitBoardWithDialog();
+                    }
+                    break;
+                case VirtualKey.C:
+                    if (keyboard.IsKeyDown(VirtualKey.CONTROL))
+                    {
+                        CopyCircuitBoard();
+                    }
+                    break;
+                case VirtualKey.V:
+                    if (keyboard.IsKeyDown(VirtualKey.CONTROL))
+                    {
+                        PasteCircuitBoard();
+                    }
+                    break;
             }
         }
 
