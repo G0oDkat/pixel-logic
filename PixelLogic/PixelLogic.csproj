@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ApplicationIcon>Logo.ico</ApplicationIcon>
@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.1" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
     <PackageReference Include="WinApi" Version="4.0.0" />
     <PackageReference Include="WinApi.DxUtils" Version="4.0.0" />
   </ItemGroup>

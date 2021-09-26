@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace PixelLogic
+﻿namespace PixelLogic
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             using (var application = new PixelLogicApp())
             {
