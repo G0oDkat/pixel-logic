@@ -3,7 +3,7 @@
   <VisualElements BackgroundColor="#000000"
                   ForegroundText="light"
                   ShowNameOnSquare150x150Logo="off"
-                  Square150x150Logo="Assets\Logo-150x150.png"
-                  Square70x70Logo="Assets\Logo-70x70.png"
-                  Square44x44Logo="Assets\Logo-44x44.png"/>
+                  Square150x150Logo="Resources\Images\Logo-150x150.png"
+                  Square70x70Logo="Resources\Images\Logo-70x70.png"
+                  Square44x44Logo="Resources\Images\Logo-44x44.png"/>
 </Application>
