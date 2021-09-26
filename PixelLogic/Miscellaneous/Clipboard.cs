@@ -7,7 +7,6 @@
     using System.Runtime.InteropServices;
     using Interop.Kernel32;
     using Interop.User32;
-    using SixLabors.ImageSharp.Formats.Bmp;
     using SixLabors.ImageSharp.PixelFormats;
 
     internal static class Clipboard

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PixelLogic.Miscellaneous.Input
+﻿namespace PixelLogic.Miscellaneous.Input
 {
+    using System;
+    using System.Collections.Generic;
     using WinApi.User32;
     using WinApi.Windows;
 
@@ -11,13 +9,13 @@ namespace PixelLogic.Miscellaneous.Input
     {
         private readonly HashSet<VirtualKey> keys;
 
-        public event EventHandler<VirtualKey> KeyDown;
-        public event EventHandler<VirtualKey> KeyUp;
-
         public Keyboard()
         {
             keys = new HashSet<VirtualKey>();
         }
+
+        public event EventHandler<VirtualKey> KeyDown;
+        public event EventHandler<VirtualKey> KeyUp;
 
         public void ProcessKey(ref KeyPacket packet)
         {

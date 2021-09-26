@@ -2,9 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Drawing;
-    using System.Reflection.Metadata;
     using WinApi.User32;
     using WinApi.Windows;
     using WinApi.Windows.Helpers;

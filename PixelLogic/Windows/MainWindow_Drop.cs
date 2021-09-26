@@ -7,7 +7,7 @@
     using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
-    using global::Interop.Shell32;
+    using Interop.Shell32;
     using Miscellaneous;
     using WinApi.User32;
     using WinApi.Windows;

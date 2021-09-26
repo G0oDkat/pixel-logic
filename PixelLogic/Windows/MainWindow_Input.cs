@@ -1,9 +1,7 @@
 ﻿namespace PixelLogic.Windows
 {
     using System;
-    using Miscellaneous;
     using SharpDX;
-    using SixLabors.ImageSharp;
     using WinApi.User32;
     using WinApi.Windows;
     using Image = Miscellaneous.Image;
@@ -158,21 +156,11 @@
             {
                 float z = zoom * zoomFactor;
 
-
-
-
                 if (z <= maxZoom)
                 {
                     zoom = z;
-
-                    //var vector2 = new Vector2(positionWorld.X * zoomFactor - positionWorld.X, positionWorld.Y * zoomFactor - positionWorld.Y);
-                    //translation = new Vector2((translation.X - vector2.X) / zoomFactor, (translation.Y - vector2.Y) / zoomFactor);
-
-
                     translation = new Vector2((translation.X - (positionWorld.X * zoomFactor - positionWorld.X)) / zoomFactor, (translation.Y - (positionWorld.Y * zoomFactor - positionWorld.Y)) / zoomFactor);
-
                 }
-
             }
             else
             {
@@ -181,9 +169,6 @@
                 if (z >= minZoom)
                 {
                     zoom = z;
-                    //var vector2 = new Vector2(positionWorld.X - (positionWorld.X / zoomFactor) , positionWorld.Y - (positionWorld.Y / zoomFactor));
-                    //translation = new Vector2((translation.X + vector2.X) * zoomFactor , (translation.Y + vector2.Y)  * zoomFactor );
-
                     translation = new Vector2((translation.X + (positionWorld.X - (positionWorld.X / zoomFactor))) * zoomFactor, (translation.Y + (positionWorld.Y - (positionWorld.Y / zoomFactor))) * zoomFactor);
                 }
             }

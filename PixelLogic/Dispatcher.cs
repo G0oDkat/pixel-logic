@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PixelLogic
+﻿namespace PixelLogic
 {
+    using System;
     using System.Collections.Concurrent;
-    using System.ComponentModel;
 
-    interface IDispatcher
-    {
-        void Invoke(Action action);
-    }
-
-    class Dispatcher : IDispatcher
+    internal class Dispatcher : IDispatcher
     {
         public static IDispatcher Current;
 
@@ -26,7 +17,9 @@ namespace PixelLogic
         public void Invoke(Action action)
         {
             if (action == null)
+            {
                 throw new ArgumentNullException(nameof(action));
+            }
 
             pending.Enqueue(action);
         }

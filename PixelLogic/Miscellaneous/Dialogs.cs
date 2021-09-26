@@ -1,31 +1,12 @@
 ﻿namespace PixelLogic.Miscellaneous
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Runtime.InteropServices;
     using System.Text;
     using Interop.Comdlg32;
 
-    internal class SaveFileDialogOptions
-    {
-        public SaveFileDialogOptions()
-        {
-            Filters = new List<KeyValuePair<string, string>>();
-        }
-
-        public string FileName { get; set; }
-
-        public string DefaultExtension { get; set; }
-
-        public ICollection<KeyValuePair<string, string>> Filters { get; }
-    }
-
-
     internal static class Dialogs
     {
-
-
         public static bool OpenSaveFileDialog(SaveFileDialogOptions options, out string fileName)
         {
             if (options == null)
@@ -52,13 +33,9 @@
                 lpstrFilter = null;
             }
 
-            
-
-
             var buffer = new char[1024];
 
             options.FileName?.CopyTo(0, buffer, 0, Math.Min(options.FileName.Length, 1024));
-
 
             GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
 

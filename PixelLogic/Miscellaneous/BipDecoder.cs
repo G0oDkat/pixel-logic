@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PixelLogic.Miscellaneous
+﻿namespace PixelLogic.Miscellaneous
 {
+    using System;
     using System.IO;
     using System.Runtime.InteropServices;
     using System.Threading;

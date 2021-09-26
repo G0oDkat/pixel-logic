@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PixelLogic
+﻿namespace PixelLogic
 {
+    using System;
     using WinApi.User32;
     using WinApi.Windows;
 
-    class DispatcherEventLoop : EventLoopCore
+    internal class DispatcherEventLoop : EventLoopCore
     {
         private readonly Dispatcher dispatcher;
 
@@ -27,6 +24,7 @@ namespace PixelLogic
                 User32Methods.DispatchMessage(ref msg);
                 dispatcher.InvokePending();
             }
+
             return res;
         }
     }
