@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Interop.Comdlg32\Interop.Comdlg32.csproj" />
     <ProjectReference Include="..\Interop.Kernel32\Interop.Kernel32.csproj" />
     <ProjectReference Include="..\Interop.Shell32\Interop.Shell32.csproj" />
     <ProjectReference Include="..\Interop.User32\Interop.User32.csproj" />

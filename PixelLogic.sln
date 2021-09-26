@@ -5,11 +5,13 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PixelLogic", "PixelLogic\PixelLogic.csproj", "{820A12E5-437B-4CBC-8585-3E64DBFB8613}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interop.User32", "Interop.User32\Interop.User32.csproj", "{791A9A29-036C-4983-BC43-0CCCE916E261}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interop.User32", "Interop.User32\Interop.User32.csproj", "{791A9A29-036C-4983-BC43-0CCCE916E261}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interop.Shell32", "Interop.Shell32\Interop.Shell32.csproj", "{690992DA-0405-49AF-813B-79B0FC770463}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interop.Shell32", "Interop.Shell32\Interop.Shell32.csproj", "{690992DA-0405-49AF-813B-79B0FC770463}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interop.Kernel32", "Interop.Kernel32\Interop.Kernel32.csproj", "{83ACECF9-0435-4DB1-93A8-1C7EA49B3068}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interop.Kernel32", "Interop.Kernel32\Interop.Kernel32.csproj", "{83ACECF9-0435-4DB1-93A8-1C7EA49B3068}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interop.Comdlg32", "Interop.Comdlg32\Interop.Comdlg32.csproj", "{ACD67BBC-7684-4DEC-A5C7-05ED45265CFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{83ACECF9-0435-4DB1-93A8-1C7EA49B3068}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83ACECF9-0435-4DB1-93A8-1C7EA49B3068}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83ACECF9-0435-4DB1-93A8-1C7EA49B3068}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACD67BBC-7684-4DEC-A5C7-05ED45265CFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACD67BBC-7684-4DEC-A5C7-05ED45265CFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACD67BBC-7684-4DEC-A5C7-05ED45265CFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACD67BBC-7684-4DEC-A5C7-05ED45265CFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

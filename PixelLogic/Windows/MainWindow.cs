@@ -1,12 +1,11 @@
 ﻿namespace PixelLogic.Windows
 {
-    using global::Interop.Shell32;
-    using global::System;
-    using global::System.Diagnostics;
-    using global::System.IO;
-    using global::System.Reflection;
-    using global::System.Runtime.InteropServices;
-    using Interop;
+    using System.Collections.Generic;
+    using Interop.Shell32;
+    using System;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Reflection;
     using Miscellaneous;
     using Miscellaneous.Input;
     using Models;
@@ -16,6 +15,11 @@
     using SharpDX.DXGI;
     using SharpDX.Mathematics.Interop;
     using SixLabors.ImageSharp;
+    using SixLabors.ImageSharp.Formats;
+    using SixLabors.ImageSharp.Formats.Bmp;
+    using SixLabors.ImageSharp.Formats.Gif;
+    using SixLabors.ImageSharp.Formats.Png;
+    using SixLabors.ImageSharp.Formats.Tga;
     using SixLabors.ImageSharp.PixelFormats;
     using WinApi.DxUtils;
     using WinApi.DxUtils.Component;
@@ -132,13 +136,8 @@
         private void LoadDefaultCircuitBoard()
         {
             Image image = CreateImageFromResource("PixelLogic.Samples.Tutorial.png");
-            circuitBoard = CircuitBoard.FromImage(image);
 
-            bitmap?.Dispose();
-            bitmap = new Bitmap1(Dx.D2D.Context, new Size2(image.Width, image.Height),
-                                 new BitmapProperties1(new PixelFormat(Format.B8G8R8A8_UNorm, AlphaMode.Ignore)));
-
-            ResetTransformation();
+            LoadCircuitBoard(image);
         }
 
         private void LoadCircuitBoard(Image image)
@@ -154,12 +153,65 @@
 
         private void SaveCircuitBoardWithDialog()
         {
+            try
+            {
+                var options = new SaveFileDialogOptions
+                {
+                    FileName = "CircuitBoard.png",
+                    DefaultExtension = "png",
+                    Filters =
+                    {
+                        //new KeyValuePair<string, string>("JPEG (*.jpg)", "*.jpg"),
+                        new KeyValuePair<string, string>("Portable Network Graphics (*.png)", "*.png"),
+                        new KeyValuePair<string, string>("Windows Bitmap (*.bmp)", "*.bmp"),
+                        new KeyValuePair<string, string>("Graphics Interchange Format (*.gif)", "*.gif"),
+                        new KeyValuePair<string, string>("Targa Image File (*.tga)", "*.tga"),
+                        new KeyValuePair<string, string>("All Files (*.*)", "*.*")
+                    }
+                };
 
+                if (Dialogs.OpenSaveFileDialog(options, out string path))
+                {
+                    SaveCircuitBoard(path);
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception);
+            }
         }
 
         private void SaveCircuitBoard(string path)
         {
+            string extension = Path.GetExtension(path).ToLowerInvariant();
 
+            IImageEncoder encoder;
+
+            switch (extension)
+            {
+                //case ".jpg":
+                //    encoder = new JpegEncoder()
+                //    break;
+                case ".png":
+                    encoder = new PngEncoder();
+                    break;
+                case ".bmp":
+                    encoder = new BmpEncoder();
+                    break;
+                case ".gif":
+                    encoder = new GifEncoder();
+                    break;
+                case ".tga":
+                    encoder = new TgaEncoder();
+                    break;
+                default:
+                    throw new NotSupportedException($"No image encoder available for file extension \"{extension}\".");
+            }
+
+            using (Image<Bgra32> image = circuitBoard.Image.ToImageSharp())
+            {
+                image.Save(path, encoder);
+            }
         }
         private void CopyCircuitBoard()
         {
@@ -195,7 +247,6 @@
                 Debug.WriteLine(exception);
             }
         }
-
 
         private Image CreateImageFromResource(string resource)
         {
@@ -381,6 +432,7 @@
             }
 
             isFullScreen = !isFullScreen;
+            ResetTransformation();
         }
 
 

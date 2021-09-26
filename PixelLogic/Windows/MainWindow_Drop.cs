@@ -49,7 +49,7 @@
 
                         try
                         {
-                            Shell32.DragQueryFileW(hDrop, i, handle.AddrOfPinnedObject(), size);
+                            Shell32.DragQueryFileW(hDrop, i, handle.AddrOfPinnedObject(), size + 1);
 
                             paths[i] = new string(chars.AsSpan(0, (int)size));
                         }
