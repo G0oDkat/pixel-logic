@@ -27,6 +27,7 @@
     using WinApi.Windows;
     using AlphaMode = SharpDX.Direct2D1.AlphaMode;
     using BitmapInterpolationMode = SharpDX.Direct2D1.BitmapInterpolationMode;
+    using Configuration = SixLabors.ImageSharp.Configuration;
     using Image = Miscellaneous.Image;
     using ImageSharp = SixLabors.ImageSharp.Image;
     using PixelFormat = SharpDX.Direct2D1.PixelFormat;
@@ -38,7 +39,7 @@
     {
         private readonly RawColor4 clearColor;
 
-        private readonly FileSystemWatcher fileSystemWatcher;
+        //private readonly FileSystemWatcher fileSystemWatcher;
         private readonly RawMatrix3x2 identityMatrix;
         private readonly float maxZoom;
         private readonly float minZoom;
@@ -97,28 +98,27 @@
             framesPerTick = 1;
 
             performanceMonitor = new PerformanceMonitor(TimeSpan.FromMilliseconds(1000));
-            performaceText = performaceText = "0 FPS | 0 TPS";
+            performaceText = "0 FPS | 0 TPS";
 
-            fileSystemWatcher = new FileSystemWatcher {NotifyFilter = NotifyFilters.LastWrite};
-
-            fileSystemWatcher.Changed += OnFileSystemWatcherChanged;
+            //fileSystemWatcher = new FileSystemWatcher {NotifyFilter = NotifyFilters.LastWrite};
+            //fileSystemWatcher.Changed += OnFileSystemWatcherChanged;
         }
         
-        private void OnFileSystemWatcherChanged(object sender, FileSystemEventArgs e)
-        {
-            Dispatcher.Current.Invoke(() =>
-            {
-                try
-                {
-                    Image image = CreateImageFromFile(e.FullPath);
-                    LoadCircuitBoard(image);
-                }
-                catch (Exception exception)
-                {
-                    Debug.WriteLine(exception);
-                }
-            });
-        }
+        //private void OnFileSystemWatcherChanged(object sender, FileSystemEventArgs e)
+        //{
+        //    Dispatcher.Current.Invoke(() =>
+        //    {
+        //        try
+        //        {
+        //            Image image = CreateImageFromFile(e.FullPath);
+        //            LoadCircuitBoard(image);
+        //        }
+        //        catch (Exception exception)
+        //        {
+        //            Debug.WriteLine(exception);
+        //        }
+        //    });
+        //}
 
         protected override void OnCreate(ref CreateWindowPacket packet)
         {
@@ -193,22 +193,32 @@
                 //    encoder = new JpegEncoder()
                 //    break;
                 case ".png":
-                    encoder = new PngEncoder();
+                    encoder = new PngEncoder()
+                    {
+                        ColorType = PngColorType.RgbWithAlpha,
+                    };
                     break;
                 case ".bmp":
-                    encoder = new BmpEncoder();
+                    encoder = new BmpEncoder
+                    {
+                        BitsPerPixel = BmpBitsPerPixel.Pixel32,
+                        SupportTransparency = true
+                    };
                     break;
                 case ".gif":
                     encoder = new GifEncoder();
                     break;
                 case ".tga":
-                    encoder = new TgaEncoder();
+                    encoder = new TgaEncoder
+                    {
+                        BitsPerPixel = TgaBitsPerPixel.Pixel32
+                    };
                     break;
                 default:
                     throw new NotSupportedException($"No image encoder available for file extension \"{extension}\".");
             }
 
-            using (Image<Bgra32> image = circuitBoard.Image.ToImageSharp())
+            using (Image<Bgra32> image = circuitBoard.ToImage().ToImageSharp())
             {
                 image.Save(path, encoder);
             }
@@ -217,7 +227,7 @@
         {
             try
             {
-                using (Image<Bgra32> image = circuitBoard.Image.ToImageSharp())
+                using (Image<Bgra32> image = circuitBoard.ToImage().ToImageSharp())
                 {
                     Clipboard.SetImage(image);
                 }
@@ -236,7 +246,7 @@
                 {
                     using (image)
                     {
-                        fileSystemWatcher.EnableRaisingEvents = false;
+                        //fileSystemWatcher.EnableRaisingEvents = false;
 
                         LoadCircuitBoard(Image.FromImageSharp(image));
                     }
@@ -444,7 +454,7 @@
                 textBrush?.Dispose();
                 textFormat?.Dispose();
                 bitmap?.Dispose();
-                fileSystemWatcher?.Dispose();
+                //fileSystemWatcher?.Dispose();
             }
 
             base.Dispose(disposing);

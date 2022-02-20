@@ -15,7 +15,11 @@
 
         public DibEncoder()
         {
-            encoder = new BmpEncoder();
+            encoder = new BmpEncoder()
+            {
+                BitsPerPixel = BmpBitsPerPixel.Pixel32,
+                SupportTransparency = true
+            };
         }
 
         public void Encode<TPixel>(Image<TPixel> image, Stream stream) where TPixel : unmanaged, IPixel<TPixel>

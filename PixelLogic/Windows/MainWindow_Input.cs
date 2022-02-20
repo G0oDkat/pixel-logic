@@ -37,6 +37,9 @@
                 case VirtualKey.ESCAPE:
                     Destroy();
                     break;
+                case VirtualKey.DELETE:
+                    LoadDefaultCircuitBoard();
+                    break;
                 case VirtualKey.S:
                     if (keyboard.IsKeyDown(VirtualKey.CONTROL))
                     {

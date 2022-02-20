@@ -16,7 +16,7 @@
 
         public ICollection<Wire> SourceWires { get; }
 
-        public bool IsActive { get; private set; }
+        public bool IsActive { get; set; }
 
         public bool WasActive { get; private set; }
 

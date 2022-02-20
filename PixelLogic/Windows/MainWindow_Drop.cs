@@ -77,16 +77,16 @@
         {
             string path = paths.First();
 
-            fileSystemWatcher.EnableRaisingEvents = false;
+            //fileSystemWatcher.EnableRaisingEvents = false;
 
             try
             {
                 Image image = CreateImageFromFile(path);
                 LoadCircuitBoard(image);
 
-                fileSystemWatcher.Path = Path.GetDirectoryName(path);
-                fileSystemWatcher.Filter = Path.GetFileName(path);
-                fileSystemWatcher.EnableRaisingEvents = true;
+                //fileSystemWatcher.Path = Path.GetDirectoryName(path);
+                //fileSystemWatcher.Filter = Path.GetFileName(path);
+                //fileSystemWatcher.EnableRaisingEvents = true;
             }
             catch (Exception exception)
             {

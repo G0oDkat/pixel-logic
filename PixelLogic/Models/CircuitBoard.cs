@@ -1,23 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PixelLogic.Models
+﻿namespace PixelLogic.Models
 {
+    using System;
+    using System.Collections.Generic;
     using Miscellaneous;
     using SixLabors.ImageSharp.PixelFormats;
     using Point = SharpDX.Point;
 
     class CircuitBoard
     {
-        private Image highImage;
-        private Image lowImage;
+        private readonly Image highImage;
+        private readonly Image lowImage;
 
-        private CircuitBoard(Image image)
+        private CircuitBoard(Image image, Image highImage, Image lowImage)
         {
             WireMap = new Wire[image.Width, image.Height];
             Wires = new List<Wire>();
             Image = image;
+            this.highImage = highImage;
+            this.lowImage = lowImage;
         }
 
         public Wire[,] WireMap { get; }
@@ -96,36 +96,21 @@ namespace PixelLogic.Models
             int width = image.Width;
             int height = image.Height;
 
-            var board = new CircuitBoard(image);
-
-            board.highImage = image.Clone();
+            var highImage = new Image(width, height);
+            var lowImage = new Image(width, height);
             
-            Image lowImage = image.Clone();
-
-            for (int y = 0; y < lowImage.Height; y++)
-            {
-                for (int x = 0; x < lowImage.Width; x++)
-                {
-                    Bgra32 pixel = lowImage[x,y];
-
-                    lowImage[x,y] = new Bgra32((byte)(pixel.R >> 1), (byte)(pixel.G >> 1), (byte)(pixel.B >> 1));
-                }
-            }
-
-            board.lowImage = lowImage;
+            var board = new CircuitBoard(image, highImage, lowImage);
 
             if (width == 0 || height == 0)
             {
                 return board;
             }
 
-            var random = new Random();
-
             var map = board.WireMap;
 
             if (image.IsWire(0, 0))
             {
-                var t = new Wire(random.NextBoolean(), new Point(0, 0));
+                var t = new Wire(false, new Point(0, 0));
                 map[0, 0] = t;
                 board.Wires.Add(t);
             }
@@ -145,7 +130,7 @@ namespace PixelLogic.Models
                     }
                     else
                     {
-                        var t = new Wire(random.NextBoolean(), point);
+                        var t = new Wire(false, point);
                         map[x, 0] = t;
                         board.Wires.Add(t);
                     }
@@ -166,7 +151,7 @@ namespace PixelLogic.Models
                     }
                     else
                     {
-                        var t = new Wire(random.NextBoolean(), point);
+                        var t = new Wire(false, point);
                         map[0, y] = t;
                         board.Wires.Add(t);
                     }
@@ -207,7 +192,7 @@ namespace PixelLogic.Models
                             }
                             else
                             {
-                                var t = new Wire(random.NextBoolean(), point);
+                                var t = new Wire(false, point);
                                 map[x, y] = t;
                                 board.Wires.Add(t);
                             }
@@ -298,19 +283,66 @@ namespace PixelLogic.Models
 
             foreach (Wire wire in board.Wires)
             {
+                int active = 0;
+                foreach (Point point in wire.Points)
+                {
+                    int x = point.X;
+                    int y = point.Y;
+                    Bgra32 color = image[x, y];
+
+                    byte r = color.R;
+                    byte g = color.G;
+                    byte b = color.B;
+                    byte a = color.A;
+
+                    highImage[x, y] = new Bgra32(r, g, b);
+                    lowImage[x, y] = new Bgra32((byte)(r / 2), (byte)(g / 2), (byte)(b / 2));
+
+                    if (a >= 128)
+                    {
+                        active++;
+                    }
+                    else
+                    {
+                        active--;
+                    }
+                }
+
+                wire.IsActive = active > 0;
+
                 Image i = wire.IsActive ? board.highImage : board.lowImage;
 
-                    foreach (Point point in wire.Points)
-                    {
-                        int x = point.X;
-                        int y = point.Y;
-
-                        image[x,y] = i[x,y];
-                    }
+                foreach (Point point in wire.Points)
+                {
+                    int x = point.X;
+                    int y = point.Y;
+                    image[x, y] = i[x, y];
+                }
             }
 
             return board;
+        }
 
+        public Image ToImage()
+        {
+            Image image = Image.Clone();
+
+            foreach (Wire wire in Wires)
+            {
+                byte alpha = wire.IsActive ? (byte)255 : (byte)127;
+
+                foreach (Point point in wire.Points)
+                {
+                    int x = point.X;
+                    int y = point.Y;
+
+                    Bgra32 color = highImage[x, y];
+
+                    image[x, y] = new Bgra32(color.R, color.G, color.B, alpha);
+                }
+            }
+
+            return image;
         }
 
         private void MergeWires(Wire wire1, Wire wire2)
