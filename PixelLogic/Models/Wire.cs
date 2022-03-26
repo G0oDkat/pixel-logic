@@ -1,4 +1,4 @@
-﻿namespace PixelLogic.Models
+﻿namespace GOoDkat.PixelLogic.Models
 {
     using System.Collections.Generic;
     using SharpDX;

@@ -1,4 +1,4 @@
-﻿namespace Interop.Kernel32
+﻿namespace GOoDkat.Interop.Kernel32
 {
     using System;
     using System.Diagnostics.CodeAnalysis;

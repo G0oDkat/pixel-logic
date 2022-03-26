@@ -1,4 +1,4 @@
-﻿namespace PixelLogic.Miscellaneous
+﻿namespace GOoDkat.PixelLogic.Miscellaneous
 {
     using System;
     using SharpDX.Direct2D1;
@@ -35,15 +35,7 @@
             int height = image.Height;
             var result = new Image(width, height);
 
-
-            if (image.TryGetSinglePixelSpan(out Span<Bgra32> singlePixelSpan))
-            {
-                singlePixelSpan.CopyTo(result.data);
-            }
-            else
-            {
-                throw new InvalidOperationException("Unable to get a single pixel span.");
-            }
+            image.CopyPixelDataTo(result.data);
 
             return result;
         }

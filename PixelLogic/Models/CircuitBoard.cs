@@ -1,4 +1,4 @@
-﻿namespace PixelLogic.Models
+﻿namespace GOoDkat.PixelLogic.Models
 {
     using System;
     using System.Collections.Generic;

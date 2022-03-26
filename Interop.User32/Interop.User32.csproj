@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>GOoDkat.Interop.User32</AssemblyName>
+    <RootNamespace>GOoDkat.Interop.User32</RootNamespace>
   </PropertyGroup>
 
 </Project>

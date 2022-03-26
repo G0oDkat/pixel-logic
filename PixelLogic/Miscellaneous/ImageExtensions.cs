@@ -1,4 +1,4 @@
-﻿namespace PixelLogic.Miscellaneous
+﻿namespace GOoDkat.PixelLogic.Miscellaneous
 {
     using SixLabors.ImageSharp.PixelFormats;
 

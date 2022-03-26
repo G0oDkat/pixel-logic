@@ -1,4 +1,4 @@
-﻿namespace PixelLogic.Miscellaneous.Input
+﻿namespace GOoDkat.PixelLogic.Miscellaneous.Input
 {
     using System;
     using System.Collections.Generic;

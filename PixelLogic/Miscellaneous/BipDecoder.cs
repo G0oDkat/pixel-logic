@@ -1,4 +1,4 @@
-﻿namespace PixelLogic.Miscellaneous
+﻿namespace GOoDkat.PixelLogic.Miscellaneous
 {
     using System;
     using System.IO;
@@ -19,38 +19,38 @@
             decoder = new BmpDecoder();
         }
 
-        public Image<TPixel> Decode<TPixel>(Configuration configuration, Stream stream) where TPixel : unmanaged, IPixel<TPixel>
+        public Image<TPixel> Decode<TPixel>(Configuration configuration, Stream stream, CancellationToken token) where TPixel : unmanaged, IPixel<TPixel>
         {
             using (Stream bmpStream = DibToBmpStream(stream))
             {
-                return decoder.Decode<TPixel>(configuration, bmpStream);
+                return decoder.Decode<TPixel>(configuration, bmpStream, token);
             }
         }
 
-        public SixLabors.ImageSharp.Image Decode(Configuration configuration, Stream stream)
+        public SixLabors.ImageSharp.Image Decode(Configuration configuration, Stream stream, CancellationToken token)
         {
             using (Stream bmpStream = DibToBmpStream(stream))
             {
-                return decoder.Decode(configuration, bmpStream);
+                return decoder.Decode(configuration, bmpStream, token);
             }
         }
 
-        public async Task<Image<TPixel>> DecodeAsync<TPixel>(Configuration configuration, Stream stream, CancellationToken cancellationToken) where TPixel : unmanaged, IPixel<TPixel>
+        public async Task<Image<TPixel>> DecodeAsync<TPixel>(Configuration configuration, Stream stream, CancellationToken token) where TPixel : unmanaged, IPixel<TPixel>
         {
             // ReSharper disable once UseAwaitUsing
-            using (Stream bmpStream = await DibToBmpStreamAsync(stream, cancellationToken).ConfigureAwait(false))
+            using (Stream bmpStream = await DibToBmpStreamAsync(stream, token).ConfigureAwait(false))
             {
-                return decoder.Decode<TPixel>(configuration, bmpStream);
+                return decoder.Decode<TPixel>(configuration, bmpStream, token);
             }
         }
 
-        public async Task<SixLabors.ImageSharp.Image> DecodeAsync(Configuration configuration, Stream stream, CancellationToken cancellationToken)
+        public async Task<SixLabors.ImageSharp.Image> DecodeAsync(Configuration configuration, Stream stream, CancellationToken token)
         {
             // ReSharper disable once UseAwaitUsing
-            using (Stream bmpStream = await DibToBmpStreamAsync(stream, cancellationToken).ConfigureAwait(false))
+            using (Stream bmpStream = await DibToBmpStreamAsync(stream, token).ConfigureAwait(false))
             {
                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                return decoder.Decode(configuration, bmpStream);
+                return decoder.Decode(configuration, bmpStream, token);
             }
         }
 

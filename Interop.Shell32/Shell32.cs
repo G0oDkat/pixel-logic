@@ -1,5 +1,5 @@
 ﻿
-namespace Interop.Shell32
+namespace GOoDkat.Interop.Shell32
 {
     using System;
     using System.Diagnostics.CodeAnalysis;

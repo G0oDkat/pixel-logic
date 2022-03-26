@@ -1,4 +1,4 @@
-﻿namespace PixelLogic
+﻿namespace GOoDkat.PixelLogic
 {
     internal static class Program
     {

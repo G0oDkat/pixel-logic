@@ -1,11 +1,11 @@
-﻿namespace PixelLogic.Windows
+﻿namespace GOoDkat.PixelLogic.Windows
 {
-    using System.Collections.Generic;
-    using Interop.Shell32;
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Reflection;
+    using Interop.Shell32;
     using Miscellaneous;
     using Miscellaneous.Input;
     using Models;
@@ -27,7 +27,6 @@
     using WinApi.Windows;
     using AlphaMode = SharpDX.Direct2D1.AlphaMode;
     using BitmapInterpolationMode = SharpDX.Direct2D1.BitmapInterpolationMode;
-    using Configuration = SixLabors.ImageSharp.Configuration;
     using Image = Miscellaneous.Image;
     using ImageSharp = SixLabors.ImageSharp.Image;
     using PixelFormat = SharpDX.Direct2D1.PixelFormat;
@@ -135,7 +134,7 @@
 
         private void LoadDefaultCircuitBoard()
         {
-            Image image = CreateImageFromResource("PixelLogic.Samples.Tutorial.png");
+            Image image = CreateImageFromResource("GOoDkat.PixelLogic.Samples.Tutorial.png");
 
             LoadCircuitBoard(image);
         }

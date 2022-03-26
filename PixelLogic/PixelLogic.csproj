@@ -1,35 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <ApplicationIcon>Logo.ico</ApplicationIcon>
-    <PackageId>PIXEL LOGIC</PackageId>
-    <Authors>GOoDkat</Authors>
-    <Product>PIXEL LOGIC</Product>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<ApplicationIcon>Logo.ico</ApplicationIcon>
+		<PackageId>PIXEL LOGIC</PackageId>
+		<Authors>GOoDkat</Authors>
+		<Product>PIXEL LOGIC</Product>
+		<StartupObject>GOoDkat.PixelLogic.Program</StartupObject>
+		<RootNamespace>GOoDkat.PixelLogic</RootNamespace>
+		<PlatformTarget>x64</PlatformTarget>
+		<AssemblyName>GOoDkat.PixelLogic</AssemblyName>
+		<Version>1.0.0</Version>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Samples\Tutorial.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Samples\Tutorial.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Samples\Tutorial.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Samples\Tutorial.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
-    <PackageReference Include="WinApi" Version="4.0.0" />
-    <PackageReference Include="WinApi.DxUtils" Version="4.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="2.1.0" />
+		<PackageReference Include="WinApi" Version="4.0.0" />
+		<PackageReference Include="WinApi.DxUtils" Version="4.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Interop.Comdlg32\Interop.Comdlg32.csproj" />
-    <ProjectReference Include="..\Interop.Kernel32\Interop.Kernel32.csproj" />
-    <ProjectReference Include="..\Interop.Shell32\Interop.Shell32.csproj" />
-    <ProjectReference Include="..\Interop.User32\Interop.User32.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Interop.Comdlg32\Interop.Comdlg32.csproj" />
+		<ProjectReference Include="..\Interop.Kernel32\Interop.Kernel32.csproj" />
+		<ProjectReference Include="..\Interop.Shell32\Interop.Shell32.csproj" />
+		<ProjectReference Include="..\Interop.User32\Interop.User32.csproj" />
+	</ItemGroup>
 </Project>

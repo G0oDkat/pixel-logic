@@ -1,10 +1,9 @@
-﻿namespace PixelLogic.Windows
+﻿namespace GOoDkat.PixelLogic.Windows
 {
     using System;
     using System.Buffers;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
     using Interop.Shell32;

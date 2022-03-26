@@ -1,4 +1,4 @@
-﻿namespace PixelLogic
+﻿namespace GOoDkat.PixelLogic
 {
     using System;
     using System.Collections.Concurrent;

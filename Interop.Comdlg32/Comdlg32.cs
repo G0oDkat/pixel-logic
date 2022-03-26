@@ -1,4 +1,4 @@
-﻿namespace Interop.Comdlg32
+﻿namespace GOoDkat.Interop.Comdlg32
 {
     using System;
     using System.Diagnostics.CodeAnalysis;

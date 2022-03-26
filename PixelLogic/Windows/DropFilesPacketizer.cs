@@ -1,4 +1,4 @@
-﻿namespace PixelLogic.Windows
+﻿namespace GOoDkat.PixelLogic.Windows
 {
     using WinApi.Windows;
 
