@@ -2,6 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
+    using System.IO;
+    using System.Reflection;
     using WinApi.User32;
     using WinApi.Windows;
     using WinApi.Windows.Helpers;
@@ -11,13 +14,13 @@
         private readonly IEventLoop loop;
         private readonly WindowFactory windowFactory;
         private readonly HashSet<WindowCore> windows;
-        //private readonly Icon icon;
+        private readonly Icon icon;
 
         public Application()
         {
             loop = new DispatcherEventLoop();
-            //icon = LoadIcon();
-            windowFactory = WindowFactory.Create(/*hIcon:icon.Handle*/);
+            icon = LoadIcon();
+            windowFactory = WindowFactory.Create(hIcon:icon.Handle);
             windows = new HashSet<WindowCore>();
         }
 
@@ -26,6 +29,8 @@
             if (windows != null)
                 foreach (WindowCore window in windows)
                     window?.Dispose();
+
+            icon?.Dispose();
         }
 
         public int Run()
@@ -65,10 +70,15 @@
             return window;
         }
 
-        //private Icon LoadIcon()
-        //{
-        //    string fileName = Process.GetCurrentProcess().MainModule.FileName;
-        //    return Icon.ExtractAssociatedIcon(fileName);
-        //}
+        private static Icon LoadIcon()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            using (Stream stream = assembly.GetManifestResourceStream("GOoDkat.PixelLogic.Logo.ico"))
+            {
+                var loadIcon = new Icon(stream, 128, 128);
+                return loadIcon;
+            }
+        }
     }
 }
