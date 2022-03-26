@@ -25,9 +25,11 @@
                 case VirtualKey.F11:
                     ToggleFullScreen();
                     break;
+                case VirtualKey.OEM_PLUS:
                 case VirtualKey.ADD:
                     IncreaseTicks();
                     break;
+                case VirtualKey.OEM_MINUS:
                 case VirtualKey.SUBTRACT:
                     DecreaseTicks();
                     break;
