@@ -37,4 +37,8 @@
 		<ProjectReference Include="..\Interop.Shell32\Interop.Shell32.csproj" />
 		<ProjectReference Include="..\Interop.User32\Interop.User32.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Properties\PublishProfiles\" />
+	</ItemGroup>
 </Project>
