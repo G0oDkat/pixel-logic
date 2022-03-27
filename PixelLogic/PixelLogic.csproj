@@ -13,7 +13,7 @@
 		<RootNamespace>GOoDkat.PixelLogic</RootNamespace>
 		<PlatformTarget>x64</PlatformTarget>
 		<AssemblyName>GOoDkat.PixelLogic</AssemblyName>
-		<Version>1.0.0</Version>
+		<Version>1.1.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
