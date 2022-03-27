@@ -53,6 +53,7 @@
         private int forcedWireY;
         private int frames;
         private int framesPerTick;
+        private bool update;
 
         private bool isFullScreen;
         private bool isMaximized;
@@ -142,7 +143,7 @@
         private void LoadCircuitBoard(Image image)
         {
             circuitBoard = CircuitBoard.FromImage(image);
-
+            update = true;
             bitmap?.Dispose();
             bitmap = new Bitmap1(Dx.D2D.Context, new Size2(image.Width, image.Height),
                                  new BitmapProperties1(new PixelFormat(Format.B8G8R8A8_UNorm, AlphaMode.Ignore)));
@@ -160,10 +161,8 @@
                     DefaultExtension = "png",
                     Filters =
                     {
-                        //new KeyValuePair<string, string>("JPEG (*.jpg)", "*.jpg"),
                         new KeyValuePair<string, string>("Portable Network Graphics (*.png)", "*.png"),
                         new KeyValuePair<string, string>("Windows Bitmap (*.bmp)", "*.bmp"),
-                        new KeyValuePair<string, string>("Graphics Interchange Format (*.gif)", "*.gif"),
                         new KeyValuePair<string, string>("Targa Image File (*.tga)", "*.tga"),
                         new KeyValuePair<string, string>("All Files (*.*)", "*.*")
                     }
@@ -188,11 +187,8 @@
 
             switch (extension)
             {
-                //case ".jpg":
-                //    encoder = new JpegEncoder()
-                //    break;
                 case ".png":
-                    encoder = new PngEncoder()
+                    encoder = new PngEncoder
                     {
                         ColorType = PngColorType.RgbWithAlpha,
                     };
@@ -203,9 +199,6 @@
                         BitsPerPixel = BmpBitsPerPixel.Pixel32,
                         SupportTransparency = true
                     };
-                    break;
-                case ".gif":
-                    encoder = new GifEncoder();
                     break;
                 case ".tga":
                     encoder = new TgaEncoder
@@ -310,7 +303,6 @@
 
             if (frames % framesPerTick == 0)
             {
-                bool update = false;
                 for (int i = 0; i < ticksPerFrame; i++)
                 {
                     update |= circuitBoard.Update();
@@ -320,6 +312,7 @@
                 if (update)
                 {
                     circuitBoard.Image.CopyToBitmap(bitmap);
+                    update = false;
                 }
 
                 frames = 0;
