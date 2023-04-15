@@ -1,59 +1,58 @@
-﻿namespace GOoDkat.PixelLogic.Miscellaneous.Input
+﻿namespace GOoDkat.PixelLogic.Miscellaneous.Input;
+
+using System;
+using System.Collections.Generic;
+using WinApi.User32;
+using WinApi.Windows;
+
+public class Keyboard
 {
-    using System;
-    using System.Collections.Generic;
-    using WinApi.User32;
-    using WinApi.Windows;
+    private readonly HashSet<VirtualKey> keys;
 
-    public class Keyboard
+    public Keyboard()
     {
-        private readonly HashSet<VirtualKey> keys;
+        keys = new HashSet<VirtualKey>();
+    }
 
-        public Keyboard()
+    public event EventHandler<VirtualKey> KeyDown;
+    public event EventHandler<VirtualKey> KeyUp;
+
+    public void ProcessKey(ref KeyPacket packet)
+    {
+        VirtualKey key = packet.Key;
+
+        if (packet.IsKeyDown)
         {
-            keys = new HashSet<VirtualKey>();
-        }
-
-        public event EventHandler<VirtualKey> KeyDown;
-        public event EventHandler<VirtualKey> KeyUp;
-
-        public void ProcessKey(ref KeyPacket packet)
-        {
-            VirtualKey key = packet.Key;
-
-            if (packet.IsKeyDown)
+            if (!packet.InputState.IsPreviousKeyStatePressed)
             {
-                if (!packet.InputState.IsPreviousKeyStatePressed)
-                {
-                    keys.Add(key);
-                    RaiseKeyDown(key);
-                }
-            }
-            else
-            {
-                keys.Remove(key);
-                RaiseKeyUp(key);
+                keys.Add(key);
+                RaiseKeyDown(key);
             }
         }
-
-        public bool IsKeyDown(VirtualKey key)
+        else
         {
-            return keys.Contains(key);
+            keys.Remove(key);
+            RaiseKeyUp(key);
         }
+    }
 
-        public bool IsKeyUp(VirtualKey key)
-        {
-            return !keys.Contains(key);
-        }
+    public bool IsKeyDown(VirtualKey key)
+    {
+        return keys.Contains(key);
+    }
 
-        private void RaiseKeyDown(VirtualKey key)
-        {
-            KeyDown?.Invoke(this, key);
-        }
+    public bool IsKeyUp(VirtualKey key)
+    {
+        return !keys.Contains(key);
+    }
 
-        private void RaiseKeyUp(VirtualKey key)
-        {
-            KeyUp?.Invoke(this, key);
-        }
+    private void RaiseKeyDown(VirtualKey key)
+    {
+        KeyDown?.Invoke(this, key);
+    }
+
+    private void RaiseKeyUp(VirtualKey key)
+    {
+        KeyUp?.Invoke(this, key);
     }
 }

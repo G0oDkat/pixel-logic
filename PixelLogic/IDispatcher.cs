@@ -1,9 +1,8 @@
-﻿namespace GOoDkat.PixelLogic
-{
-    using System;
+﻿namespace GOoDkat.PixelLogic;
 
-    internal interface IDispatcher
-    {
-        void Invoke(Action action);
-    }
+using System;
+
+internal interface IDispatcher
+{
+    void Invoke(Action action);
 }

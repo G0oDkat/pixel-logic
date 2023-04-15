@@ -1,16 +1,15 @@
-﻿namespace GOoDkat.PixelLogic.Windows
-{
-    using WinApi.Windows;
+﻿namespace GOoDkat.PixelLogic.Windows;
 
-    internal static class DropFilesPacketizer
+using WinApi.Windows;
+
+internal static class DropFilesPacketizer
+{
+    public static unsafe void ProcessDropFiles(ref WindowMessage msg, MainWindow window)
     {
-        public static unsafe void ProcessDropFiles(ref WindowMessage msg, MainWindow window)
+        fixed (WindowMessage* ptr = &msg)
         {
-            fixed (WindowMessage* ptr = &msg)
-            {
-                var packet = new DropFilesPacket(ptr);
-                window.OnDropFiles(ref packet);
-            }
+            var packet = new DropFilesPacket(ptr);
+            window.OnDropFiles(ref packet);
         }
     }
 }

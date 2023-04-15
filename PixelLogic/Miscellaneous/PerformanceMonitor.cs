@@ -1,66 +1,65 @@
-﻿namespace GOoDkat.PixelLogic.Miscellaneous
+﻿namespace GOoDkat.PixelLogic.Miscellaneous;
+
+using System;
+using System.Diagnostics;
+
+internal class PerformanceMonitor
 {
-    using System;
-    using System.Diagnostics;
+    private readonly Stopwatch stopwatch;
 
-    internal class PerformanceMonitor
+    private readonly TimeSpan interval;
+
+    private int frameCount;
+    private int tickCount;
+
+
+    public PerformanceMonitor(TimeSpan interval)
     {
-        private readonly Stopwatch stopwatch;
+        this.interval = interval;
+        stopwatch = new Stopwatch();
+    }
 
-        private readonly TimeSpan interval;
+    public double FramesPerSecond{ get; private set; }
 
-        private int frameCount;
-        private int tickCount;
+    public double TicksPerSecond { get; private set; }
 
+    public void Start()
+    {
+        stopwatch.Start();
+    }
 
-        public PerformanceMonitor(TimeSpan interval)
+    public void Stop()
+    {
+        stopwatch.Stop();
+        frameCount = 0;
+        tickCount = 0;
+    }
+
+    public void IncrementTicks()
+    {
+        tickCount++;
+    }
+
+    public void IncermentFrames()
+    {
+        frameCount++;
+    }
+
+    public bool TryCalculate()
+    {
+        TimeSpan elapsed = stopwatch.Elapsed;
+
+        if (elapsed > interval)
         {
-            this.interval = interval;
-            stopwatch = new Stopwatch();
-        }
-
-        public double FramesPerSecond{ get; private set; }
-
-        public double TicksPerSecond { get; private set; }
-
-        public void Start()
-        {
-            stopwatch.Start();
-        }
-
-        public void Stop()
-        {
-            stopwatch.Stop();
+            FramesPerSecond = frameCount / elapsed.TotalSeconds;
+            TicksPerSecond = tickCount / elapsed.TotalSeconds;
             frameCount = 0;
             tickCount = 0;
+            stopwatch.Restart();
+
+            return true;
         }
 
-        public void IncrementTicks()
-        {
-            tickCount++;
-        }
-
-        public void IncermentFrames()
-        {
-            frameCount++;
-        }
-
-        public bool TryCalculate()
-        {
-            TimeSpan elapsed = stopwatch.Elapsed;
-
-            if (elapsed > interval)
-            {
-                FramesPerSecond = frameCount / elapsed.TotalSeconds;
-                TicksPerSecond = tickCount / elapsed.TotalSeconds;
-                frameCount = 0;
-                tickCount = 0;
-                stopwatch.Restart();
-
-                return true;
-            }
-
-            return false;
-        }
+        return false;
     }
 }

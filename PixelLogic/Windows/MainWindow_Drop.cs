@@ -1,96 +1,95 @@
-﻿namespace GOoDkat.PixelLogic.Windows
+﻿namespace GOoDkat.PixelLogic.Windows;
+
+using System;
+using System.Buffers;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Interop.Shell32;
+using Miscellaneous;
+using WinApi.User32;
+using WinApi.Windows;
+
+internal partial class MainWindow
 {
-    using System;
-    using System.Buffers;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Runtime.InteropServices;
-    using Interop.Shell32;
-    using Miscellaneous;
-    using WinApi.User32;
-    using WinApi.Windows;
-
-    internal partial class MainWindow
+    protected override void OnMessage(ref WindowMessage msg)
     {
-        protected override void OnMessage(ref WindowMessage msg)
+        switch (msg.Id)
         {
-            switch (msg.Id)
-            {
-                case WM.DROPFILES:
-                    DropFilesPacketizer.ProcessDropFiles(ref msg, this);
-                    break;
-                default:
-                    base.OnMessage(ref msg);
-                    break;
-            }
+            case WM.DROPFILES:
+                DropFilesPacketizer.ProcessDropFiles(ref msg, this);
+                break;
+            default:
+                base.OnMessage(ref msg);
+                break;
         }
+    }
 
-        public void OnDropFiles(ref DropFilesPacket packet)
+    public void OnDropFiles(ref DropFilesPacket packet)
+    {
+        IntPtr hDrop = packet.HDrop;
+
+        try
         {
-            IntPtr hDrop = packet.HDrop;
+            uint count = Shell32.DragQueryFileW(hDrop, 0xFFFFFFFF, IntPtr.Zero, 0);
 
-            try
+            var paths = new string[(int)count];
+
+            for (uint i = 0; i < count; i++)
             {
-                uint count = Shell32.DragQueryFileW(hDrop, 0xFFFFFFFF, IntPtr.Zero, 0);
+                uint size = Shell32.DragQueryFileW(hDrop, i, IntPtr.Zero, 0);
 
-                var paths = new string[(int)count];
+                char[] chars = ArrayPool<char>.Shared.Rent((int)(size + 1));
 
-                for (uint i = 0; i < count; i++)
+                try
                 {
-                    uint size = Shell32.DragQueryFileW(hDrop, i, IntPtr.Zero, 0);
-
-                    char[] chars = ArrayPool<char>.Shared.Rent((int)(size + 1));
+                    GCHandle handle = GCHandle.Alloc(chars, GCHandleType.Pinned);
 
                     try
                     {
-                        GCHandle handle = GCHandle.Alloc(chars, GCHandleType.Pinned);
+                        Shell32.DragQueryFileW(hDrop, i, handle.AddrOfPinnedObject(), size + 1);
 
-                        try
-                        {
-                            Shell32.DragQueryFileW(hDrop, i, handle.AddrOfPinnedObject(), size + 1);
-
-                            paths[i] = new string(chars.AsSpan(0, (int)size));
-                        }
-                        finally
-                        {
-                            if (handle.IsAllocated)
-                                handle.Free();
-                        }
+                        paths[i] = new string(chars.AsSpan(0, (int)size));
                     }
                     finally
                     {
-                        ArrayPool<char>.Shared.Return(chars);
+                        if (handle.IsAllocated)
+                            handle.Free();
                     }
                 }
+                finally
+                {
+                    ArrayPool<char>.Shared.Return(chars);
+                }
+            }
 
-                OnFilesDropped(paths);
-            }
-            finally
-            {
-                Shell32.DragFinish(hDrop);
-            }
+            OnFilesDropped(paths);
         }
-
-        private void OnFilesDropped(ICollection<string> paths)
+        finally
         {
-            string path = paths.First();
+            Shell32.DragFinish(hDrop);
+        }
+    }
 
-            //fileSystemWatcher.EnableRaisingEvents = false;
+    private void OnFilesDropped(ICollection<string> paths)
+    {
+        string path = paths.First();
 
-            try
-            {
-                Image image = CreateImageFromFile(path);
-                LoadCircuitBoard(image);
+        //fileSystemWatcher.EnableRaisingEvents = false;
 
-                //fileSystemWatcher.Path = Path.GetDirectoryName(path);
-                //fileSystemWatcher.Filter = Path.GetFileName(path);
-                //fileSystemWatcher.EnableRaisingEvents = true;
-            }
-            catch (Exception exception)
-            {
-                Debug.WriteLine(exception);
-            }
+        try
+        {
+            Image image = CreateImageFromFile(path);
+            LoadCircuitBoard(image);
+
+            //fileSystemWatcher.Path = Path.GetDirectoryName(path);
+            //fileSystemWatcher.Filter = Path.GetFileName(path);
+            //fileSystemWatcher.EnableRaisingEvents = true;
+        }
+        catch (Exception exception)
+        {
+            Debug.WriteLine(exception);
         }
     }
 }

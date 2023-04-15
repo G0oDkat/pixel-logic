@@ -1,35 +1,34 @@
-﻿namespace GOoDkat.PixelLogic
+﻿namespace GOoDkat.PixelLogic;
+
+using System;
+using System.Collections.Concurrent;
+
+internal class Dispatcher : IDispatcher
 {
-    using System;
-    using System.Collections.Concurrent;
+    public static IDispatcher Current;
 
-    internal class Dispatcher : IDispatcher
+    private readonly ConcurrentQueue<Action> pending;
+
+    public Dispatcher()
     {
-        public static IDispatcher Current;
+        pending = new ConcurrentQueue<Action>();
+    }
 
-        private readonly ConcurrentQueue<Action> pending;
-
-        public Dispatcher()
+    public void Invoke(Action action)
+    {
+        if (action == null)
         {
-            pending = new ConcurrentQueue<Action>();
+            throw new ArgumentNullException(nameof(action));
         }
 
-        public void Invoke(Action action)
-        {
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
+        pending.Enqueue(action);
+    }
 
-            pending.Enqueue(action);
-        }
-
-        public void InvokePending()
+    public void InvokePending()
+    {
+        while (pending.TryDequeue(out Action action))
         {
-            while (pending.TryDequeue(out Action action))
-            {
-                action.Invoke();
-            }
+            action.Invoke();
         }
     }
 }

@@ -1,31 +1,24 @@
-﻿namespace GOoDkat.PixelLogic
+﻿namespace GOoDkat.PixelLogic;
+
+using System;
+using WinApi.User32;
+
+internal class DispatcherEventLoop
 {
-    using System;
-    using WinApi.User32;
-    using WinApi.Windows;
+    private readonly Dispatcher dispatcher;
 
-    internal class DispatcherEventLoop : EventLoopCore
+    public DispatcherEventLoop(Dispatcher dispatcher)
     {
-        private readonly Dispatcher dispatcher;
+        this.dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+    }
 
-        public DispatcherEventLoop(object state = null) : base(state)
+    public void Run()
+    {
+        while (User32Methods.GetMessage(out Message message, IntPtr.Zero, 0, 0) > 0)
         {
-            dispatcher = new Dispatcher();
-            Dispatcher.Current = dispatcher;
-        }
-
-        public override int RunCore()
-        {
-            Message msg;
-            int res;
-            while ((res = User32Methods.GetMessage(out msg, IntPtr.Zero, 0, 0)) > 0)
-            {
-                User32Methods.TranslateMessage(ref msg);
-                User32Methods.DispatchMessage(ref msg);
-                dispatcher.InvokePending();
-            }
-
-            return res;
+            User32Methods.TranslateMessage(ref message);
+            User32Methods.DispatchMessage(ref message);
+            dispatcher.InvokePending();
         }
     }
 }
